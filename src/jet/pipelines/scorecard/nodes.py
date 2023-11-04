@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
+# test change
 
 def qualify_data(restaurants_data, parameters: dict):
     chain_indie = []
