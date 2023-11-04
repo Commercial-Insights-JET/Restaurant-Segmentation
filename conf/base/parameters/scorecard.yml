@@ -1,0 +1,15 @@
+# This is a boilerplate parameters config generated for pipeline 'scorecard'
+# using Kedro 0.18.12.
+#
+# Documentation for this file format can be found in "Parameters"
+# Link: https://docs.kedro.org/en/0.18.12/kedro_project_setup/configuration.html#parameters
+
+scorecard_options:
+  data_v: 1
+  incl_chains: 1
+  incl_indies: 1
+  scorecard_metrics:
+  - miod_top_bucket_orders_pcn
+  - miod_top_bucket_customers_pcn
+  - miod_top_bucket_repeat_orders
+  - total_rating_with_jet

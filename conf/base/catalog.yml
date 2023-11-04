@@ -1,0 +1,213 @@
+# Here you can define all your data sets by using simple YAML syntax.
+#
+# Documentation for this file format can be found in "The Data Catalog"
+# Link: https://docs.kedro.org/en/stable/data/data_catalog.html
+
+### Training inputs
+latest_menus_1:
+  type: pandas.CSVDataSet
+  filepath: data/01_train_input/latest_menus_1.csv
+
+latest_menus_2:
+  type: pandas.CSVDataSet
+  filepath: data/01_train_input/latest_menus_2.csv
+
+latest_menus_3:
+  type: pandas.CSVDataSet
+  filepath: data/01_train_input/latest_menus_3.csv
+
+latest_menus_4:
+  type: pandas.CSVDataSet
+  filepath: data/01_train_input/latest_menus_4.csv
+
+jet_restaurants:
+  type: pandas.CSVDataSet
+  filepath: data/01_train_input/REST_SEG_BASE_3.csv
+
+### Processed
+menus_data:
+  type: pandas.CSVDataSet
+  filepath: data/02_train_intermediate/menus_uk.csv
+
+restaurants_data:
+  type: pandas.CSVDataSet
+  filepath: data/02_train_intermediate/restaurants_uk.csv
+
+qualified_restaurants_data:
+  type: pandas.CSVDataSet
+  filepath: data/02_train_intermediate/qualified_restaurants_uk.csv
+
+scorecard_data:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pandas.CSVDataSet
+    filepath: data/07_scorecard/scorecard_uk.csv
+
+### model train + target data
+featureswithtarget_data:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pandas.CSVDataSet
+    filepath: data/03_train_output/features_with_target_uk.csv
+
+train_features_data:
+  type: pandas.CSVDataSet
+  filepath: data/02_train_intermediate/train_features_data.csv
+
+data_17_x:
+  type: pandas.CSVDataSet
+  filepath: data/02_train_intermediate/data_17_x.csv
+
+data_full_x:
+  type: pandas.CSVDataSet
+  filepath: data/02_train_intermediate/data_full_x.csv
+
+data_y:
+  type: pandas.CSVDataSet
+  filepath: data/02_train_intermediate/data_y.csv
+
+### generic
+trained_scaler:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pickle.PickleDataSet
+    filepath: data/08_models/scaler.pkl
+
+### xgb_17
+model_xgb_17:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pickle.PickleDataSet
+    filepath: data/08_models/model_xgb_17.pkl
+
+prediction_output_xgb_17:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pandas.CSVDataSet
+    filepath: data/03_train_output/output_xgb_17.csv
+
+algo_metrics_xgb_17:  
+  type: kedro_mlflow.io.metrics.MlflowMetricsDataSet
+
+output_plot_xgb_17:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: matplotlib.MatplotlibWriter
+    filepath: data/09_reporting/output_plot_xgb_17.png
+    save_args:
+      format: png
+
+### xgb_full
+model_xgb_full:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pickle.PickleDataSet
+    filepath: data/08_models/model_xgb_full.pkl
+
+prediction_output_xgb_full:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pandas.CSVDataSet
+    filepath: data/03_train_output/output_xgb_full.csv
+
+algo_metrics_xgb_full:  
+  type: kedro_mlflow.io.metrics.MlflowMetricsDataSet
+
+output_plot_xgb_full:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: matplotlib.MatplotlibWriter
+    filepath: data/09_reporting/output_plot_xgb_full.png
+    save_args:
+      format: png
+
+### tpot
+tpot_output:
+  type: text.TextDataSet
+  filepath: data/08_models/tpot_output.py
+
+### predictions input
+prospect_restaurants:
+  type: pandas.CSVDataSet
+  filepath: data/04_predict_input/REST_SEG_PROSPECTS_1.csv
+
+predict_features_data: 
+  type: pandas.CSVDataSet
+  filepath: data/05_predict_intermediate/predict_features_data.csv
+
+predict_features_data_context: 
+  type: pandas.CSVDataSet
+  filepath: data/05_predict_intermediate/predict_features_data_context.csv
+
+
+
+### kmeans_3
+kmeans_3_model:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pickle.PickleDataSet
+    filepath: data/08_models/model_kmeans_3.pkl
+
+kmeans_3_output:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pandas.CSVDataSet
+    filepath: data/06_predict_output/output_kmeans_3.csv
+
+output_plot_kmeans_3:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: matplotlib.MatplotlibWriter
+    filepath: data/09_reporting/output_plot_kmeans_3.png
+    save_args:
+      format: png
+
+output_top_features_kmeans_3:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: text.TextDataSet
+    filepath: data/09_reporting/output_top_features_kmeans_3.txt
+
+
+### kmeans_10
+kmeans_10_model:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pickle.PickleDataSet
+    filepath: data/08_models/model_kmeans_10.pkl
+
+kmeans_10_output:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pandas.CSVDataSet
+    filepath: data/06_predict_output/output_kmeans_10.csv
+
+output_plot_kmeans_10:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: matplotlib.MatplotlibWriter
+    filepath: data/09_reporting/output_plot_kmeans_3.png
+    save_args:
+      format: png
+
+### predictions output
+model_predicted_xgb_17:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pandas.CSVDataSet
+    filepath: data/06_predict_output/model_predicted_xgb.csv
+
+model_predicted_xgb_full:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pandas.CSVDataSet
+    filepath: data/06_predict_output/model_predicted_xgb_full.csv
+
+combined_predictions:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: pandas.CSVDataSet
+    filepath: data/06_predict_output/combined_predictions.csv
+
+
+
