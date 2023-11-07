@@ -337,17 +337,14 @@ def check_data_missing(data_df):
 
 def select_features_17(data: pd.DataFrame) -> Tuple:
     features = [
-        "total_rating",
         "goo_rating",
         "uber_rating",
-        "goo_active",
         "roo_rating",
+        "ta_rating",
         "total_reviews",
         "url_has",
-        "uber_active",
         "restaurant_miod",
         "district_num",
-        "roo_active",
         "population_density",
         "rural_classification_rural_town_and_fringe",
         "restaurant_hva_2._wealthy",

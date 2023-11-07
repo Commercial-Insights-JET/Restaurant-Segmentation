@@ -6,8 +6,7 @@ generated using Kedro 0.18.12
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
-
-# test change 7 Nov
+import logging
 
 def qualify_data(restaurants_data, parameters: dict):
     chain_indie = []
@@ -21,6 +20,7 @@ def qualify_data(restaurants_data, parameters: dict):
         (restaurants_data["in_operation_flag"] == 1)
         & (restaurants_data["grocery_flag"] == 0)
         & (restaurants_data["chain_flag"].isin(chain_indie))
+        & (restaurants_data["miod__orders"] >= parameters["min_miod_orders"])
     ]
     return restaurants_data
 
@@ -156,9 +156,19 @@ def get_miod_buckets(df_miod_long):
     return miod_buckets
 
 
+def get_miod_means(data_df):
+
+    miod_order_cols = ['miod_10_orders', 'miod_9_orders', 'miod_8_orders', 'miod_7_orders', 'miod_6_orders', 'miod_5_orders', 'miod_4_orders', 'miod_3_orders', 'miod_2_orders', 'miod_1_orders']
+    data_df['mean_miod_order'] = (data_df[miod_order_cols] * list(range(10, 0, -1))).sum(axis = 1)/data_df['miod__orders']
+
+    miod_customer_cols = ['miod_10_customers', 'miod_9_customers', 'miod_8_customers', 'miod_7_customers', 'miod_6_customers', 'miod_5_customers', 'miod_4_customers', 'miod_3_customers', 'miod_2_customers', 'miod_1_customers']
+    data_df['mean_miod_customer'] = (data_df[miod_customer_cols] * list(range(10, 0, -1))).sum(axis = 1)/data_df['miod__customers']
+
+    return data_df[['restaurant_key', 'mean_miod_order', 'mean_miod_customer']].drop_duplicates()
+
 def scale_metrics(data_df, parameters: dict):
     scorecard_scaled_metrics = []
-    for col in parameters["scorecard_metrics"]:
+    for col in parameters["scaled_metrics"]:
         new_col = col + "_scaled"
         data_df[new_col] = MinMaxScaler().fit_transform(data_df[[col]])
         scorecard_scaled_metrics.append(new_col)
@@ -166,12 +176,26 @@ def scale_metrics(data_df, parameters: dict):
 
 
 def get_scorecard_v1(data_df, parameters: dict):
+
     data_area = data_df
     miod_long = convert_miod_long(data_area)
+
     miod_buckets = get_miod_buckets(miod_long)
     data_area = data_area.merge(miod_buckets, how="left", on="restaurant_key")
+
+    miod_means = get_miod_means(data_df)
+    data_area = data_area.merge(miod_means, how = 'left', on = 'restaurant_key')
+
+    scorecard_agg_cols = []
+
     for col in parameters["scorecard_metrics"]:
         data_area.loc[data_area[col].isin([0, np.NaN, np.inf]), col] = 0
+
+        if col in parameters["scaled_metrics"]:
+            scorecard_agg_cols.append(col + "_scaled")
+        else:
+            scorecard_agg_cols.append(col)
+
     data_area, scorecard_scaled_metrics = scale_metrics(data_area, parameters)
     scorecard_cols = [
         "restaurant_key",
@@ -185,8 +209,11 @@ def get_scorecard_v1(data_df, parameters: dict):
         "miod_top_bucket_customers_pcn",
         "miod_top_bucket_repeat_orders",
         "total_rating_with_jet",
+        'mean_miod_order',
+        'mean_miod_customer'
     ] + scorecard_scaled_metrics
     scorecard = data_area[scorecard_cols]
-    scorecard["score"] = scorecard[scorecard_scaled_metrics].sum(axis=1)
-    scorecard["score_rank"] = pd.qcut(scorecard["score"], q=10).cat.codes + 1
+
+    scorecard["score"] = scorecard[scorecard_agg_cols].mean(axis=1)
+    scorecard["score_rank"] = pd.qcut(scorecard["score"], q=10, duplicates='drop').cat.codes + 1
     return scorecard

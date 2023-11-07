@@ -8,8 +8,11 @@ scorecard_options:
   data_v: 1
   incl_chains: 1
   incl_indies: 1
+  min_miod_orders: 100
   scorecard_metrics:
+  - mean_miod_order
+  - mean_miod_customer
+  scaled_metrics:
   - miod_top_bucket_orders_pcn
   - miod_top_bucket_customers_pcn
   - miod_top_bucket_repeat_orders
-  - total_rating_with_jet
